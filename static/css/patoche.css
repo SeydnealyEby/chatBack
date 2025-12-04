@@ -1,0 +1,47 @@
+/* ============================================= */
+/*   Patoche + Tailwind : Animations & Scroll    */
+/* ============================================= */
+
+/* Animation des bulles de message */
+.message-bubble {
+    animation: message-pop 0.18s ease-out;
+}
+
+@keyframes message-pop {
+    from {
+        transform: translateY(6px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Animation du texte “marquee” */
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.animate-marquee {
+    animation: marquee 40s linear infinite;
+}
+
+/* Scrollbar custom pour la zone de chat (Chrome/Edge) */
+.chat-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-scroll::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.4);
+    border-radius: 999px;
+}

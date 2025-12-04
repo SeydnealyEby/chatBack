@@ -2,45 +2,96 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Patoche - Le Daron Ultime</title>
-    <style>
-        body {font-family: Comic Sans MS, cursive; background: #ffeb99; margin:0;}
-        .container {max-width: 800px; margin: 30px auto; padding: 20px; text-align:center;}
-        #patoche {width: 280px; border-radius: 50%; border: 12px solid #fff; box-shadow: 0 0 20px rgba(0,0,0,0.5);}
-        .chat {height: 500px; overflow-y: scroll; background: white; padding: 20px; border: 5px solid black; margin: 20px 0; text-align:left;}
-        .message {margin: 15px 0;}
-        .user {text-align: right; color: navy;}
-        .patoche {background: #ffcc00; padding: 15px; border-radius: 20px; display: inline-block; max-width:80%;}
-        input[type=text] {width: 75%; padding: 15px; font-size: 18px; border: 3px solid black;}
-        button {padding: 15px 30px; font-size: 18px; background: red; color: white; border: none; cursor:pointer;}
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PATOCHE - Le Daron Ultime™</title>
+    {% load static %}
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Optionnel: petite config Tailwind (font plus moderne) -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Poppins', 'system-ui', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
+
+    <!-- Animations & scrollbar personnalisés -->
+    <link rel="stylesheet" href="{% static 'css/patoche.css' %}">
 </head>
-<body>
-<div class="container">
-    <h1>🛠️ PATOCHE - LE DARON ULTIME 🛠️</h1>
-    <img id="patoche" src="https://i.postimg.cc/0jZxKx9k/patoche-realiste.jpg" alt="Patoche">
-    <p><i>« À mon époque on réparait avec du scotch et du Ricard, et voilà le travail ! »</i></p>
+<body class="min-h-screen bg-slate-950 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100 flex flex-col">
 
-    <div class="chat" id="chat"></div>
-    <input type="text" id="msg" placeholder="Parle à Patoche, mon grand..." onkeypress="if(event.key=='Enter') send()">
-    <button onclick="send()">Envoyer</button>
-</div>
+    <!-- HEADER -->
+    <header class="sticky top-0 z-20 border-b border-slate-800 bg-slate-900/80 backdrop-blur">
+        <div class="max-w-5xl mx-auto px-4 py-4">
+            <h1 class="text-center tracking-[0.35em] text-[0.7rem] sm:text-xs md:text-sm lg:text-base font-semibold uppercase text-slate-100">
+                PATOCHE LE DARON ULTIME
+            </h1>
+        </div>
+    </header>
 
-<script>
-function send() {
-    let msg = document.getElementById("msg").value.trim();
-    if (!msg) return;
-    let chat = document.getElementById("chat");
-    chat.innerHTML += `<div class="message user"><b>Toi :</b> ${msg}</div>`;
-    
-    fetch(`/ask/?msg=${encodeURIComponent(msg)}`)
-        .then(r => r.json())
-        .then(data => {
-            chat.innerHTML += `<div class="message"><div class="patoche"><b>Patoche :</b> ${data.reponse}</div></div>`;
-            chat.scrollTop = chat.scrollHeight;
-        });
-    document.getElementById("msg").value = "";
-}
-</script>
+    <!-- MARQUEE / BANDEAU TEXTE -->
+    <section class="border-b border-slate-800 bg-slate-900/90 text-[0.65rem] sm:text-xs uppercase tracking-[0.25em] text-center text-slate-300 py-2 px-4 overflow-hidden">
+        <p class="whitespace-nowrap inline-block animate-marquee">
+            ICI ON RÉPARE AVEC DU SCOTCH, DU RICARD ET DES COUPS DE PIED DANS LE RADIATEUR • 405 BREAK 4L/100 MAIS ELLE ROULE ENCORE • À MON ÉPOQUE…
+        </p>
+    </section>
+
+    <!-- CONTENU PRINCIPAL -->
+    <main class="flex-1">
+        <div class="max-w-3xl mx-auto px-4 py-8">
+            <div class="rounded-3xl border border-slate-800/70 bg-slate-900/80 shadow-xl shadow-slate-950/70 backdrop-blur-xl p-6 sm:p-8">
+
+                <!-- AVATAR + SLOGAN -->
+                <div class="flex flex-col items-center text-center gap-3">
+                    <img
+                        id="patoche"
+                        class="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border border-slate-600 shadow-lg shadow-slate-950/70"
+                        src="https://i.postimg.cc/0jZxKx9k/patoche-realiste.jpg"
+                        alt="Patoche en marcel">
+
+                    <p class="text-sm sm:text-base text-slate-200 max-w-xl">
+                        « J’ai réparé le micro-ondes avec une fourchette et du papier alu, il a pris feu mais au moins il sentait le grillé ! »
+                    </p>
+                </div>
+
+                <!-- ZONE DE CHAT -->
+                <div
+                    id="chat"
+                    class="mt-6 max-h-[420px] sm:max-h-[520px] overflow-y-auto bg-slate-950/60 border border-slate-800/70 rounded-2xl px-4 py-3 flex flex-col gap-3 chat-scroll">
+                </div>
+
+                <!-- INPUT + BOUTON -->
+                <div class="mt-5 pt-4 border-t border-slate-800 flex gap-3 items-center">
+                    <input
+                        type="text"
+                        id="msg"
+                        placeholder="Vas-y balance, mon grand..."
+                        autocomplete="off"
+                        class="flex-1 rounded-full bg-slate-950/70 border border-slate-700 px-4 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+
+                    <button
+                        onclick="send()"
+                        class="inline-flex items-center gap-1 rounded-full bg-indigo-500 hover:bg-indigo-400 text-white text-sm font-medium px-5 py-2 shadow-lg shadow-indigo-500/40 active:scale-95 transition">
+                        ENVOYER
+                        <span class="text-xs">↗</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="text-center text-[0.7rem] text-slate-500 py-4 px-4">
+        © 2025 Patoche Dupont - Tous droits réservés - 405 Break Diesel 1991 - 1 234 567 km au compteur Cigarette
+    </footer>
+
+    <script src="{% static 'js/patoche.js' %}"></script>
 </body>
 </html>
