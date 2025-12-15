@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -23,9 +24,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-@wnb(!ziff_fw4q4xuf2jb3!$2h1_(z)zr!3$h4$x5569()n9)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False   # en prod
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "nirdapi.midnightdevs.online",
+    "localhost",
+    "127.0.0.1",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://chat.midnightdevs.online",
+     "http://localhost:3001",
+    "http://127.0.0.1:3001",
+]
+
+CORS_ALLOW_ALL_ORIGINS = False 
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://nirdapi.midnightdevs.online",
+    "https://chat.midnightdevs.online",
+]
 
 
 # Application definition
@@ -37,6 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
@@ -47,6 +67,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'chatbruti.urls'
@@ -114,10 +135,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
-# STATIC_URL = '/static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"   # 👉 pour collectstatic
 
-# Dossier où tu mets tes fichiers (CSS/JS) → À LA RACINE
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / "static",   # tes fichiers statiques “source”
 ]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+

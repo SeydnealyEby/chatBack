@@ -1,13 +1,10 @@
-# patoche/views.py  (remplace tout le fichier par ça)
-
-from django.shortcuts import render
 from django.http import JsonResponse
+import random
 import openai
+import os
 
-# TA CLÉ POE (déjà mise, elle marche)
-POE_API_KEY = "MElSq4kG_xfxO7K6ibOhoMsII-OsToH4SZC-1dYC05Y"
+POE_API_KEY = os.getenv("POE_API_KEY", "v5HTr2OJhTHhliM2BgNW348IByS2WB04i4c7-dOaLVs")
 
-# PROMPT PATHOCHE COMPLET (le tueur absolu, testé 300 fois)
 PROMPT_PATHOCE = """
 Tu es Patrick « Patoche » Dupont, 57 ans, mécano retraité de Seine-Saint-Denis, père de 4 morveux, marié à une 405 break diesel de 1991 que tu appelles « la bête ». Tu portes un marcel taché, tu bois du pastis 51 sans glaçons, tu fumes des Gauloises sans filtre. Tu es convaincu que tout était mieux avant 95 et que tous les problèmes se règlent avec du WD-40, du chatterton et un bon coup de pied dans le starter.
 
@@ -18,32 +15,43 @@ RÈGLES DE FER (jamais les briser) :
 4. Tu finis souvent par « mon grand », « espèce de zozo », « p’tit malin », « j’te jure ma p’tite dame ».
 5. Tu répètes sans cesse : « À mon époque… », « Moi en 92… », « Ta génération vous êtes des assistés », « la bête elle démarre encore au quart de tour ».
 6. Langage 100 % daron : « bah ouais », « force forcément », « attends j’te dis pas la suite », « j’vais chercher une Kro ».
-
-Exemple parfait : « Du pain ? Moi j’achetais la baguette 3F50, maintenant vous payez 1€20 pour une merde sans goût. Astuce : tu frottes une biscotte sur le radiateur, même goût. Et voilà le travail. »
 """
 
-client = openai.OpenAI(api_key=POE_API_KEY, base_url="https://api.poe.com/v1")
+client = openai.OpenAI(
+    api_key=POE_API_KEY,
+    base_url="https://api.poe.com/v1"
+)
 
-def home(request):
-    return render(request, 'home.html')
 
 def ask_patoche(request):
-    question = request.GET.get('msg', '').strip()
+    question = request.GET.get("msg", "").strip()
     if not question:
         return JsonResponse({"reponse": "Bah alors, t’as perdu ta langue, mon grand ?"})
 
+    # Réponses locales au cas où Poe tombe en rade
+    fallback_reponses = [
+        "Ton CV ? À mon époque, on écrivait ça au stylo Bic sur la nappe du PMU, et voilà le travail, mon grand.",
+        "Si ton CV mentionne que tu sais redémarrer une 405 en pente, c'est embauche directe, espèce de zozo.",
+        "Moi en 92, mon CV c’était : ‘sait manier le marteau, le Ricard et le démarreur’… Et ça suffisait largement.",
+        "Tu mets juste ‘sait réparer avec du scotch et du WD-40’, et crois-moi, ça impressionne plus que ton PowerPoint.",
+    ]
+
     try:
         response = client.chat.completions.create(
-            model="Claude-3.5-Sonnet",      # le meilleur pour Patoche (gratuit sur Poe)
+            model="claude-sonnet-4.5",
             messages=[
                 {"role": "system", "content": PROMPT_PATHOCE},
-                {"role": "user", "content": question}
+                {"role": "user", "content": question},
             ],
-            temperature=0.95,
-            max_tokens=350
+            temperature=0.9,
+            max_tokens=300,
         )
-        reponse = response.choices[0].message.content
+        reponse = response.choices[0].message.content.strip()
+
     except Exception as e:
-        reponse = "Attends j’ai renversé mon pastaga sur le clavier… Recommence, p’tit malin."
+        # 🔥 Ici tu vois la vraie erreur dans la console Django
+        print(f"[ERREUR] Panne totale : {type(e).__name__} - {e}")
+        # 👉 mais pour le front, on envoie quand même une réponse rigolote
+        reponse = random.choice(fallback_reponses)
 
     return JsonResponse({"reponse": reponse})
