@@ -34,7 +34,9 @@ React
 
 Material UI (MUI)
 
-JavaScript (ES6+)
+JavaScript (ES6+)      
+
+
 dépôt: https://github.com/SeydnealyEby/chatFront
 
 Autres:
@@ -45,9 +47,9 @@ Déploiement web (API + Front):
 
 Démonstration
 
-Site web : https://chat.midnightdevs.online
-API : https://nirdapi.midnightdevs.online/ask/?msg=Bonjour
+Site web : https://chat.midnightdevs.online 
 
-Site web : https://chat.midnightdevs.online
 
 API : https://nirdapi.midnightdevs.online/ask/?msg=Bonjour
+
+
